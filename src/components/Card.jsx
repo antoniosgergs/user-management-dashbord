@@ -31,5 +31,4 @@ const Card = ({ firstName, lastName = '', status, dateOfBirth, email}) => {
         </div>
     )
 }
-
 export default Card;

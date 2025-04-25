@@ -1,17 +1,37 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import axios from "axios";
+import {useQuery} from "@tanstack/react-query";
+import useAuthStore from "../store/authStore.js";
+import {useSearchParams} from "react-router";
 
-export const useUsers = () => {
-    return useQuery(['users'], async () => {
-        const { data } = await axios.get('/api/users');
-        return data;
-    });
-};
+const useUsers = () => {
+    let userApi = '/api/users';
 
-export const useDeleteUser = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (id) => axios.delete(`/api/users/${id}`),
-        onSuccess: () => queryClient.invalidateQueries(['users']),
-    });
-};
+    const { accessToken } = useAuthStore.getState();
+    const [searchParams] = useSearchParams();
+    const searchValue = searchParams.get("query");
+
+    const getUsers = async () =>{
+        if(searchValue?.trim()){
+            userApi = userApi + `?search=${searchValue}`
+        }
+
+        return await axios.get(userApi,{
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+    };
+
+    const { isPending, error, data } = useQuery({
+        queryKey: ['users', searchValue || ''],
+        queryFn: getUsers,
+    })
+
+    return {
+        isPending,
+        error,
+        data
+    }
+}
+
+export default useUsers;

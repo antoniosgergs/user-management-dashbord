@@ -34,11 +34,11 @@ const Login = () => {
             const response = await fetch('/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify( { body: {email, password} }),
+                body: JSON.stringify(  {email, password} ),
             });
 
             const data = await response.json();
-            const { accessToken, expiresIn  } = data?.result?.data;
+            const { accessToken, expiresIn  } = data?.result?.data ?? {};
 
             if (response.ok && accessToken) {
                 setAuth({accessToken, expiresIn });

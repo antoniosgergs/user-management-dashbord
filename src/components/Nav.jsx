@@ -6,9 +6,14 @@ import useAuthStore from "../store/authStore.js";
 const Nav = () => {
     const navigate = useNavigate();
     const { clearAuth } = useAuthStore();
+
     const onLogout = () => {
         clearAuth();
         navigate('/login');
+    }
+
+    const onCreateUser = () => {
+        navigate('/dashboard/new')
     }
 
     return (
@@ -19,7 +24,7 @@ const Nav = () => {
 
             <div className="flex  flex-1 justify-end">
                 <div className="flex space-x-2 ">
-                    <Button title={'Create User'} bg={"bg-white"} textColor={"text-[#6f84da]"}/>
+                    <Button title={'Create User'} bg={"bg-white"} onClick={onCreateUser} textColor={"text-[#6f84da]"}/>
                     <Button title={'Logout'} bg={'bg-[#fa2832]'} onClick={onLogout}/>
                     <button className="p-2 rounded-full hover:bg-blue-500 hover:text-white transition">
                         <MoonIcon className="h-5 w-5 text-white"/>

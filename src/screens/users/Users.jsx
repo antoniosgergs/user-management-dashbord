@@ -3,17 +3,18 @@ import Wrapper from "../../components/Wrapper.jsx";
 import useUsers from "../../hooks/useUsers.js";
 
 const Users = () => {
-    const { isPending, error, data } = useUsers();
+    const {getUserQuery} = useUsers();
+    const { isPending, error, data } = getUserQuery;
 
     return (
         <Wrapper>
             {isPending ? (
                 <p className="text-center text-blue-500 mt-4">Loading users...</p>
             ) : error ? (
-                <p className="text-center text-red-500 mt-4">{error}</p>
+                <p className="text-center text-red-500 mt-4">{error.message || "Something went wrong."}</p>
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center mt-6">
-                    {data?.data?.result?.data?.users?.map((user) => (
+                        {data?.map((user) => (
                         <Card
                             key={user.id}
                             firstName={user.firstName}
@@ -26,7 +27,7 @@ const Users = () => {
                 </div>
             )}
         </Wrapper>
-    )
-}
+    );
+};
 
-export default Users
+export default Users;

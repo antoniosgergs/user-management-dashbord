@@ -1,13 +1,6 @@
 import './App.css';
-import {QueryClientProvider} from "@tanstack/react-query";
-import {queryClient} from "./api/client.js";
-import Users from "./screens/users/Users.jsx";
+import {Outlet} from "react-router-dom";
 
-const App = () => {
-    return (
-        <QueryClientProvider client={queryClient}>
-            <Users/>
-        </QueryClientProvider>
-    );
-};
+const App = () => <Outlet />
+
 export default App;

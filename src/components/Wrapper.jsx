@@ -1,10 +1,10 @@
 import Nav from "./Nav.jsx";
 import SearchUser from "./SearchUser.jsx";
 
-const Wrapper = ({children}) => (
+const Wrapper = ({children, hideSearchUser=false}) => (
     <>
         <Nav />
-        <SearchUser />
+        {!hideSearchUser && <SearchUser />}
         {children}
     </>
 )

@@ -41,6 +41,14 @@ const useUsers = () => {
         });
     }
 
+    const deleteUser = async (id) => {
+        return await axios.delete(`${userApi}/${id}`,{
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        })
+    }
+
     const getUserQuery = useQuery({
         queryKey: ['users', searchValue || ''],
         queryFn: getUsers,
@@ -62,8 +70,24 @@ const useUsers = () => {
         onError: onErrorCreateUser,
     });
 
+    const onSuccessDeleteUser = (data) => {
+        queryClient.invalidateQueries(['users']);
+        toast.success(data?.data?.result?.message || 'User deleted successfully!');
+    }
+
+    const onErrorDeleteUser = (data) => {
+        toast.error(data?.response?.data?.result?.message || 'Something went wrong. Please try again.');
+    }
+
+    const deleteUserMutation = useMutation({
+        mutationFn: deleteUser,
+        onSuccess: onSuccessDeleteUser,
+        onError: onErrorDeleteUser,
+    });
+
     return {
         getUserQuery,
+        deleteUserMutation,
         createUserMutation,
     };
 };

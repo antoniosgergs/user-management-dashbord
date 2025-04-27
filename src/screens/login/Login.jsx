@@ -4,6 +4,7 @@ import Button from '../../components/Button.jsx';
 import hideIcon from '../../assets/icons/hide.png';
 import showIcon from '../../assets/icons/show.png';
 import useAuthStore from "../../store/authStore.js";
+import axios from "axios";
 
 const Login = () => {
     const { setAuth } = useAuthStore();
@@ -31,24 +32,19 @@ const Login = () => {
         setLoading(true);
 
         try {
-            const response = await fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(  {email, password} ),
+            const response = await axios.post('/api/login', {
+                email,
+                password
             });
 
-            const data = await response.json();
-            const { accessToken, expiresIn  } = data?.result?.data ?? {};
+            const { accessToken, expiresIn  } = response?.data?.result?.data ?? {};
 
-            if (response.ok && accessToken) {
+            if (accessToken) {
                 setAuth({accessToken, expiresIn });
-
                 navigate('/dashboard');
-            } else {
-                setApiError('Invalid email or password');
             }
-        } catch {
-            setApiError('Something went wrong. Please try again.');
+        } catch(error) {
+            setApiError(error?.response?.data?.result?.data?.message || 'Something went wrong. Please try again.');
         } finally {
             setLoading(false);
         }

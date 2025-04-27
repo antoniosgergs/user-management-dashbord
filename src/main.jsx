@@ -7,9 +7,9 @@ import App from './App.jsx'
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import Login from "./screens/login/Login.jsx";
 import './index.css'
-import UserForm from "./screens/users/UserForm.jsx";
+import UserForm from "./screens/dashboard/UserForm.jsx";
 import {queryClient} from "./api/client.js";
-import Users from "./screens/users/Users.jsx";
+import Users from "./screens/dashboard/Users.jsx";
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

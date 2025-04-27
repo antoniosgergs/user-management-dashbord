@@ -1,7 +1,23 @@
+import {useState} from "react";
 import Button from "./Button.jsx";
+import ConfirmationModal from "./ConfirmationModal.jsx";
+import useUsers from "../hooks/useUsers.js";
 
-const Card = ({ firstName, lastName = '', status, dateOfBirth, email}) => {
+const Card = ({ id, firstName, lastName = '', status, dateOfBirth, email}) => {
     const fullName = `${firstName} ${lastName}`;
+    const [openConfirmationModal,setOpenConfirmationModal] = useState(false);
+
+    const {deleteUserMutation} = useUsers();
+    const { mutate,isPending } = deleteUserMutation;
+
+    const onDeleteUser = () => {
+        setOpenConfirmationModal(true);
+    }
+
+    const onConfirmDelete = ()=> {
+        setOpenConfirmationModal(false);
+        mutate(id)
+    }
 
     const getInitials = (value) =>{
         return value
@@ -26,8 +42,22 @@ const Card = ({ firstName, lastName = '', status, dateOfBirth, email}) => {
             </div>
             <div className="flex justify-center gap-2 mt-4">
                 <Button title={"Edit"} textColor={'text-white'} />
-                <Button title={"Delete"} textColor={'text-white'} bg={'bg-red-600'} />
+                <Button
+                    title={isPending ? "Deleting..." : "Delete"}
+                    disabled={isPending}
+                    textColor={'text-white'}
+                    bg={'bg-red-600'}
+                    onClick={onDeleteUser}
+                />
             </div>
+
+            <ConfirmationModal
+                title={'Delete user'}
+                description={`Are you sure you want to delete ${firstName}`}
+                setOpenConfirmationModal={setOpenConfirmationModal}
+                openConfirmationModal={openConfirmationModal}
+                onConfirmDelete={onConfirmDelete}
+            />
         </div>
     )
 }

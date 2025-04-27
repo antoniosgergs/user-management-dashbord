@@ -16,6 +16,7 @@ const Users = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center mt-6">
                         {data?.map((user) => (
                         <Card
+                            id={user.id}
                             key={user.id}
                             firstName={user.firstName}
                             lastName={user.lastName}

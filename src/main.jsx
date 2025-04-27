@@ -20,6 +20,9 @@ createRoot(document.getElementById('root')).render(
                       <Route path="dashboard" element={<App />} >
                           <Route index element={<Users/>} />
                           <Route path="new" element={<UserForm />} />
+                          <Route path="edit">
+                              <Route path=":id" element={<UserForm/>}/>
+                          </Route>
                       </Route>
                   </Route>
 

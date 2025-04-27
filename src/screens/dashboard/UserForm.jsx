@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { useNavigate, useParams } from "react-router-dom";
 import { zodResolver } from '@hookform/resolvers/zod';
 import Wrapper from "../../components/Wrapper.jsx";
 import Button from "../../components/Button.jsx";
@@ -16,10 +17,14 @@ const userSchema = z.object({
 });
 
 const UserForm = () => {
-    const {createUserMutation} = useUsers();
-    const { isPending, mutate } = createUserMutation;
+    const navigate = useNavigate();
+    const { id } = useParams();
+
+    const {createUserMutation, getUserQuery, editUserMutation} = useUsers(id);
+    const {data} = getUserQuery
 
     const {
+        reset,
         register,
         handleSubmit,
         formState: { errors },
@@ -34,15 +39,33 @@ const UserForm = () => {
         }
     });
 
+    useEffect(() => {
+        if(data) {
+            reset({
+                firstName: data?.firstName || '',
+                lastName: data?.lastName || '',
+                email: data?.email || '',
+                dateOfBirth: data?.dateOfBirth || '',
+                status: data?.status || '',
+            })
+        }
+    }, [data,reset]);
+
+    const goToDashboard = () => {
+        navigate('/dashboard')
+    }
+
+    const isPendingForm = createUserMutation.isPending || editUserMutation.isPending
+
     return (
-        <Wrapper hideSearchUser={true}>
+        <Wrapper hideSearchUser={true} primaryLabel={'All users'} onPrimaryClick={goToDashboard}>
             <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
                 <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
                     <h2 className="text-xl font-semibold text-center mb-6">
-                        {'Add New User'}
+                        {id ? 'Edit User' : 'Add New User'}
                     </h2>
 
-                    <form onSubmit={handleSubmit(mutate)} className="space-y-4">
+                    <form onSubmit={id ? handleSubmit(editUserMutation.mutate) : handleSubmit(createUserMutation.mutate)} className="space-y-4">
                         <Input label={'First Name'} error={errors?.firstName?.message} {...register('firstName')} />
                         <Input label={'Last Name (Optional)'} {...register('lastName')} />
                         <Input label={'Email'} error={errors?.email?.message} {...register('email')} />
@@ -64,12 +87,14 @@ const UserForm = () => {
                             {errors.status && <p className="user-input-error">{errors.status.message}</p>}
                         </div>
 
-                        <Button
-                            title={isPending ? 'Submitting...' : 'Submit'}
-                            type="submit"
-                            disabled={isPending}
-                            className="w-full disabled:opacity-50"//md
-                        />
+                        <div className="flex justify-center mt-4">
+                            <Button
+                                title={isPendingForm ? 'Submitting...' : 'Submit'}
+                                type="submit"
+                                disabled={isPendingForm}
+                                className="disabled:opacity-50"
+                            />
+                        </div>
                     </form>
                 </div>
             </div>

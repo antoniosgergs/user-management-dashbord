@@ -2,8 +2,9 @@ import React, {useState} from "react";
 import { useSearchParams } from "react-router-dom";
 
 const SearchUser = () => {
-    const [search, setSearch] = useState('');
     const [searchParams, setSearchParams] = useSearchParams();
+
+    const [search, setSearch] = useState(searchParams.get("query") || '');
 
     const handleChange = (text) => {
         setSearch(text);
@@ -20,13 +21,13 @@ const SearchUser = () => {
     return (
         <div className="bg-white p-4 md:p-6">
             <div className="mb-1">
-              <input
-                  type="text"
-                  value={search}
-                  placeholder="Search users..."
-                  className="w-full md:w-1/3 px-4 py-2 border rounded shadow-sm"
-                  onChange={(e) => handleChange(e.target.value)}
-              />
+                <input
+                    type="text"
+                    value={search}
+                    placeholder="Search users..."
+                    className="w-full md:w-1/3 px-4 py-2 border rounded shadow-sm"
+                    onChange={(e) => handleChange(e.target.value)}
+                />
             </div>
         </div>
     );

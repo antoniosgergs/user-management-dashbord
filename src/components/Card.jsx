@@ -1,14 +1,21 @@
 import {useState} from "react";
+import {useNavigate} from "react-router-dom";
 import Button from "./Button.jsx";
 import ConfirmationModal from "./ConfirmationModal.jsx";
 import useUsers from "../hooks/useUsers.js";
 
 const Card = ({ id, firstName, lastName = '', status, dateOfBirth, email}) => {
+    const navigate = useNavigate();
+
     const fullName = `${firstName} ${lastName}`;
     const [openConfirmationModal,setOpenConfirmationModal] = useState(false);
 
     const {deleteUserMutation} = useUsers();
     const { mutate,isPending } = deleteUserMutation;
+
+    const onEditUser = () => {
+        navigate(`/dashboard/edit/${id}`);
+    }
 
     const onDeleteUser = () => {
         setOpenConfirmationModal(true);
@@ -41,7 +48,7 @@ const Card = ({ id, firstName, lastName = '', status, dateOfBirth, email}) => {
                 <p className="text-sm">Date of Birth: {dateOfBirth}</p>
             </div>
             <div className="flex justify-center gap-2 mt-4">
-                <Button title={"Edit"} textColor={'text-white'} />
+                <Button title={"Edit"} textColor={'text-white'} onClick={onEditUser} />
                 <Button
                     title={isPending ? "Deleting..." : "Delete"}
                     disabled={isPending}
